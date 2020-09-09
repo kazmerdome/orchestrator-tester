@@ -24,8 +24,68 @@ Simple, lightweight (only ~7MiB image) and easy to use service for testing Conta
 <br/><br/>
 
 ## How to use
-Coming soon ...
 
+### Example: Docker
+```console
+  docker run \
+    --rm \
+    -it \
+    -p 9090:9090 \
+    --env TEST=12 \
+    kazmerdome/orchestrator-tester:latest
+```
+- open http://localhost:9090
+
+<br/><br/>
+
+### Example: Docker compose
+```yml
+version: '3.4'
+
+services:
+  orchestrator-tester:
+    image: kazmerdome/orchestrator-tester:latest
+    environment:
+      - TEST=12
+    ports:
+      - "9090:9090"
+```
+- open http://localhost:9090
+
+<br/><br/>
+
+### Example: Docker Swarm (with traefik)
+```yml
+version: '3.4'
+
+services:
+  orchestrator-tester:
+    image: kazmerdome/orchestrator-tester:latest
+    networks:
+      - ${YOUR_NETWORK_NAME}
+    environment:
+      - TEST=12
+    deploy:
+      replicas: 4
+      restart_policy:
+        condition: on-failure
+      labels:
+      traefik.port: 9090
+        traefik.frontend.rule: "Host: ${YOUR_DOMAIN};"
+```
+- open <YOUR_DOMAIN>
+  
+<br/><br/>
+
+### Example: Kubernetes (with nginx ingress)
+Coming Soon
+
+
+<br/><br/>
+
+### Example: Binary Build
+- Check Production Mode of Development Section
+- Open http://localhost:9090
 
 <br/><br/>
 
