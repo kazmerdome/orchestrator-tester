@@ -19,6 +19,7 @@ type InfoController struct {
 	Status     int         `json:"response_http_status_code"`
 	Envs       interface{} `json:"envs"`
 	K8s        interface{} `json:"k8s"`
+	Headers    interface{} `json:"headers"`
 }
 
 func includes(slice []string, item string) bool {
@@ -35,6 +36,7 @@ func (controller InfoController) GetInfo(c echo.Context) error {
 	allEnvs := os.Environ()
 	envs := map[string]string{}
 	k8s := map[string]string{}
+	headers := map[string][]string{}
 
 	blackList := []string{
 		"GOPATH",
@@ -96,8 +98,14 @@ func (controller InfoController) GetInfo(c echo.Context) error {
 	if err != nil {
 		return err
 	}
+	headers = c.Request().Header
+	headersJSON, err := json.Marshal(headers)
+	if err != nil {
+		return err
+	}
 	json.Unmarshal([]byte(string(envJSON)), &controller.Envs)
 	json.Unmarshal([]byte(string(k8sJSON)), &controller.K8s)
+	json.Unmarshal([]byte(string(headersJSON)), &controller.Headers)
 
 	controller.InstanceID = os.Getenv("HOSTNAME")
 	controller.Path = c.Request().URL.Path
