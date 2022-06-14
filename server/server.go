@@ -1,6 +1,8 @@
 package server
 
 import (
+	"os"
+
 	"github.com/fatih/color"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
@@ -8,6 +10,11 @@ import (
 
 // New Init new Echo Server
 func New() *echo.Echo {
+	port := "9090"
+	if os.Getenv("TESTER_PORT") != "" {
+		port = os.Getenv("TESTER_PORT")
+	}
+
 	e := echo.New()
 	e.Use(middleware.Recover())
 	e.Use(middleware.CORS())
@@ -16,7 +23,7 @@ func New() *echo.Echo {
 	GetRoutes(e)
 
 	e.HideBanner = true
-	e.Logger.Fatal(e.Start(":" + "9090"))
+	e.Logger.Fatal(e.Start(":" + port))
 	return e
 }
 
